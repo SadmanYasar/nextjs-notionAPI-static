@@ -2,9 +2,9 @@ import { Client } from "@notionhq/client"
 
 const RecipePage = ({ recipes }) => {
     return(
-        <pre>
-            {JSON.stringify(recipes, null, 2)}
-        </pre>
+        <>
+            {recipes.map((r, i) => <p key={i}>{r}</p>)}
+        </>
     )
 }
 
@@ -17,9 +17,17 @@ export const getStaticProps = async () => {
         block_id: process.env.PAGE_ID
     })
 
+    const recipes = []
+
+    data.results.forEach((result) => {
+        if (result.type === 'child_page') {
+            recipes.push(result.child_page.title)
+        }
+    })
+
     return {
         props: {
-            recipes: data
+            recipes
         }
     }
 }
